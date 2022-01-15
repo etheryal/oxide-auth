@@ -141,7 +141,7 @@ pub mod access_token {
     };
     // use crate::endpoint::access_token::WrappedRequest;
 
-    #[async_trait]
+    #[async_trait(?Send)]
     pub trait Extension {
         /// Inspect the request and extension data to produce extension data.
         ///
@@ -152,7 +152,7 @@ pub mod access_token {
         ) -> std::result::Result<Extensions, ()>;
     }
 
-    #[async_trait]
+    #[async_trait(?Send)]
     impl Extension for () {
         async fn extend(
             &mut self, _: &(dyn TokenRequest + Sync), _: Extensions,
@@ -283,7 +283,7 @@ pub mod authorization {
     /// A system of addons provided additional data.
     ///
     /// An endpoint not having any extension may use `&mut ()` as the result of system.
-    #[async_trait]
+    #[async_trait(?Send)]
     pub trait Extension {
         /// Inspect the request to produce extension data.
         async fn extend(
@@ -291,7 +291,7 @@ pub mod authorization {
         ) -> std::result::Result<Extensions, ()>;
     }
 
-    #[async_trait]
+    #[async_trait(?Send)]
     impl Extension for () {
         async fn extend(&mut self, _: &(dyn Request + Sync)) -> std::result::Result<Extensions, ()> {
             Ok(Extensions::new())

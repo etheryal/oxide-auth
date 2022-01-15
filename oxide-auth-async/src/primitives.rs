@@ -7,14 +7,14 @@ use oxide_auth::primitives::{
     registrar::{ClientUrl, BoundClient, RegistrarError, PreGrant},
 };
 
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Authorizer {
     async fn authorize(&mut self, _: Grant) -> Result<String, ()>;
 
     async fn extract(&mut self, _: &str) -> Result<Option<Grant>, ()>;
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl<T> Authorizer for T
 where
     T: authorizer::Authorizer + Send + ?Sized,
@@ -28,7 +28,7 @@ where
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Issuer {
     async fn issue(&mut self, _: Grant) -> Result<IssuedToken, ()>;
 
@@ -39,7 +39,7 @@ pub trait Issuer {
     async fn recover_refresh(&mut self, _: &str) -> Result<Option<Grant>, ()>;
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl<T> Issuer for T
 where
     T: issuer::Issuer + Send + ?Sized,
@@ -61,7 +61,7 @@ where
     }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Registrar {
     async fn bound_redirect<'a>(&self, bound: ClientUrl<'a>) -> Result<BoundClient<'a>, RegistrarError>;
 
@@ -72,7 +72,7 @@ pub trait Registrar {
     async fn check(&self, client_id: &str, passphrase: Option<&[u8]>) -> Result<(), RegistrarError>;
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl<T> Registrar for T
 where
     T: registrar::Registrar + Send + Sync + ?Sized,

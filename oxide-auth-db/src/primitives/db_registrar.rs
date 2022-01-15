@@ -73,7 +73,7 @@ impl Extend<Client> for DBRegistrar {
         I: IntoIterator<Item = Client>,
     {
         iter.into_iter().for_each(|client| {
-            self.register_client(client);
+            self.register_client(client).unwrap();
         })
     }
 }
